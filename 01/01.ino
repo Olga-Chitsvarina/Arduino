@@ -4,7 +4,7 @@ const int LED = 9;
 bool ELECTRICITY_IS_ON = false;
 bool LIGHT_IS_ON = false;
 
-const int BUTTON = 2;
+const int BUTTON = 3;
 int LAST_BUTTON_STATE = 0;
 
 float time = 0;
