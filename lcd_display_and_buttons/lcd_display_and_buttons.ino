@@ -3,27 +3,34 @@
 
 LiquidCrystal lcd(1, 2, 4, 5, 6, 7);
 
+
+// Declare components that will control LED
 const int LED = 9;
 bool ELECTRICITY_IS_ON = false;
 bool LIGHT_IS_ON = false;
-
 const int BUTTON = 8;
 int LAST_BUTTON_STATE = 0;
-
-const int LED_BUTTON = 10;
-float led_time = 0;
-bool LED_IS_ON = false;
-
 float time = 0;
+
+
+// Declare components that will control LCD
+const int LCD_BUTTON = 10;
+float lcd_time = 0;
+bool lcd_is_on = false;
+
 
 void setup() {
   lcd.begin(16, 2);
   pinMode (LED, OUTPUT);
   pinMode (BUTTON, INPUT);
-//  Serial.begin(9600);
 }
 
+
 void loop() {  
+  // If someone pushed the button, then check last button state
+  // If it was off, then turn it on, prepare for blinking, update state
+  // If it was on, just update the state:
+  
   if(digitalRead(BUTTON)==HIGH){
     if(LAST_BUTTON_STATE == 0){
      ELECTRICITY_IS_ON = !ELECTRICITY_IS_ON;
@@ -37,6 +44,8 @@ void loop() {
     LAST_BUTTON_STATE = 0;
   }
 
+  // Make LED blinking, if it should be working:
+
   if(ELECTRICITY_IS_ON){
     if(time >= 500){
       LIGHT_IS_ON = !LIGHT_IS_ON;
@@ -46,22 +55,31 @@ void loop() {
     time = time + 0.03f;
   }
 
-  if(digitalRead(LED_BUTTON)==HIGH && !LED_IS_ON){
+  // If LCD button was pressed and LCD does not show any text, then set text, otherwise do nothing
+  // To set text: Go to (position, row) and type first half of the message
+  // Go to next line, (position, row), type second half of the message
+  // Remember that LCD shows text:
+  
+  if(digitalRead(LCD_BUTTON)==HIGH && !lcd_is_on){
    lcd.clear();
    lcd.setCursor(4, 0);
    lcd.print("THANK YOU");
    lcd.setCursor(0, 1);
    lcd.print("HAVE A GOOD DAY!");
     
-   LED_IS_ON = true;
-   led_time = 0;
+   lcd_is_on = true;
+   lcd_time = 0;
   }
 
-  if(LED_IS_ON){
-    if (led_time <= 5000){
-      led_time = led_time + 0.01f;  
+  // If LCD shows text, then check counter, otherwise do nothing
+  // If counter <= 5000 then increment counter
+  // If counter > 5000 then clear LCD screen, remember that LCD does not show text:
+   
+  if(lcd_is_on){
+    if (lcd_time <= 5000){
+      lcd_time = lcd_time + 0.01f;  
     }else{
-      LED_IS_ON = false;
+      lcd_is_on = false;
       lcd.clear();
     }
   }
